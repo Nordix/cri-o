@@ -26,7 +26,7 @@ func NewDestination(dest io.Writer, ref reference.NamedTagged) *Destination {
 func NewDestinationWithContext(sys *types.SystemContext, dest io.Writer, ref reference.NamedTagged) *Destination {
 	archive := internal.NewWriter(dest)
 	return &Destination{
-		internal: internal.NewDestination(sys, archive, ref),
+		internal: internal.NewDestination(sys, archive, "[An external docker/tarfile caller]", ref),
 		archive:  archive,
 	}
 }
@@ -72,7 +72,7 @@ func (d *Destination) HasThreadSafePutBlob() bool {
 }
 
 // PutBlob writes contents of stream and returns data representing the result (with all data filled in).
-// inputInfo.Digest can be optionally provided if known; it is not mandatory for the implementation to verify it.
+// inputInfo.Digest can be optionally provided if known; if provided, and stream is read to the end without error, the digest MUST match the stream contents.
 // inputInfo.Size is the expected length of stream, if known.
 // May update cache.
 // WARNING: The contents of stream are being verified on the fly.  Until stream.Read() returns io.EOF, the contents of the data SHOULD NOT be available
